@@ -2,8 +2,31 @@ from dotenv import load_dotenv
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_core.prompts import ChatPromptTemplate
 from langchain_text_splitters import RecursiveCharacterTextSplitter
+from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_community.vectorstores import Chroma
+
 
 load_dotenv()
+
+embedding_model = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+
+vectorstore = Chroma(
+    embedding_function=embedding_model,
+    persist_directory="./chroma_db"
+)
+
+retriever = vectorstore.as_retriever(
+    search_type="mmr",
+    search_kwargs={
+        "k":4,
+        "fetch_k": 10,
+        "lambda_mult": 0.5
+        }
+        )
+
+from langchain.chat_models import init_chat_model
+
+llm = init_chat_model(model_name="gemini-3.1-flash-lite", model_provider="google_genai")
 
 data = PyPDFLoader("./document loaders/python.pdf")
 docs = data.load()
@@ -15,20 +38,39 @@ splitter = RecursiveCharacterTextSplitter(
 
 chunks = splitter.split_documents(docs)
 
-from langchain.chat_models import init_chat_model
+# prompt template
+prompt = ChatPromptTemplate.from_messages([
+    (
+        "system",
+        """You are a smart and helpful assistant that answers questions based on the document provided to you.""",
+    ),
+    (
+        "human",
+        """Context: {context}
 
-model = init_chat_model("gemini-3.1-flash-lite", model_provider="google_genai")
+Question: {question}
+""",
+    )
+])
 
-template = ChatPromptTemplate.from_messages(
-    [("system",
-      """
-you are smart and helpful assistant that answers the
-questions asked by the user on the basis of the document provided to you 
-      """),
-      ("human", "{question}")]
-)
+print("HOLLY MOLLY")
 
-prompt = template.format_messages(data = docs)
-response = model.invoke(prompt)
+print("press exit to exit the program")
 
-print(response.content)
+while True:
+    query = input("You: ")
+    if query == "exit":
+        break
+    docs = retriever.invoke(query)
+
+    context = "\n".join([doc.page_content for doc in docs])
+
+    final_prompt = prompt.invoke(
+        {
+         "context": context,
+          "question": query
+          }
+        )
+    response = llm.invoke(final_prompt)
+
+    print(f"Assistant: {response.content}")
