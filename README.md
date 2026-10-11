@@ -26,8 +26,6 @@ Open the live application and ask questions about Python concepts, programming s
 - Technology Stack
 - Example Questions
 - Use Cases
-- Current Scope and Limitations
-- Future Improvements
 - Learning Outcomes
 - Live Demo and Author
 
