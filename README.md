@@ -233,9 +233,7 @@ Here are some questions you can use to explore the chatbot:
 - **Developers:** Quickly revisit familiar Python concepts.
 - **Project Demonstrations:** Explore how AI-powered question answering can be integrated into a web application.
 
-The chatbot is intended as a learning aid and should complement, rather than replace, official documentation and hands-on programming practice.<img width="1915" height="912" alt="Screenshot 2026-10-11 110409" src="https://github.com/user-attachments/assets/61c7ab1a-b19a-40c5-9a9c-e5ee6344b784" />
-<img width="1915" height="912" alt="Screenshot 2026-10-11 110409" src="https://github.com/user-attachments/assets/f538f389-cc77-4275-af4d-7b1dec25f55a" />
-
+The chatbot is intended as a learning aid and should complement, rather than replace, official documentation and hands-on programming practice.
 
 ## 📈 Learning Outcomes
 
